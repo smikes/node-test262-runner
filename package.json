@@ -2,7 +2,7 @@
   "name": "node-test262-runner",
   "version": "0.0.0",
   "description": "Node-based test runner for ECMAScript 262 tests (tc39.te",
-  "main": "index.js",
+  "main": "lib/main.js",
   "scripts": {
     "test": "mocha"
   },
