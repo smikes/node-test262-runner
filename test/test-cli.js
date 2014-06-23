@@ -20,6 +20,18 @@ describe('cli_parseArgs', function () {
 
         assert(parsed.help == true);
     });
+
+    it('should recognize a --test arg', function () {
+        var parsed = cli.parseArgs(['node', 'cli.js', '--test', './test262']);
+
+        assert.ok(parsed.test.indexOf('/test262') > 0);
+    });
+
+    it('should not resolve when --test arg is absolute path', function () {
+        var parsed = cli.parseArgs(['node', 'cli.js', '--test', '/nonexistent']);
+
+        assert.equal("/nonexistent", parsed.test);
+    });
 });
 
 function mockConsole() {
