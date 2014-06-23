@@ -21,3 +21,32 @@ describe('cli_parseArgs', function () {
         assert(parsed.help == true);
     });
 });
+
+function mockConsole() {
+    return {
+        out: [],
+        err: [],
+        log: function (s) { this.out.push(s); }
+    };
+}
+
+function mockProcess() {
+    return {
+        exitCode: undefined,
+        exit: function (n) { this.exitCode = n; }
+    };
+}
+
+
+describe("cli_runCli", function () {
+    it("should take mock arguments", function () {
+        var proc = mockProcess(),
+            con = mockConsole(),
+            parsed = { help: true };
+
+        cli.runCli(proc, con, parsed);
+
+        assert.ok(con.out.length >= 1);
+        assert.equal(0, proc.exitCode);
+    });
+});
