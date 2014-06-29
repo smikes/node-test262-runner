@@ -62,3 +62,15 @@ describe("cli_runCli", function () {
         assert.equal(0, proc.exitCode);
     });
 });
+
+describe("cli_list", function () {
+    it("should list all tests", function () {
+        var proc = mockProcess(),
+            con = mockConsole();
+
+        cli.showList(proc, con);
+
+        assert.ok(con.out.length >= 1);
+        assert.equal(0, proc.exitCode);
+    });
+});
