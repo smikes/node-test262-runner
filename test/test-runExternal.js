@@ -16,13 +16,8 @@ describe('runExternal_run', function () {
     it("handles errors", function (done) {
         var EventEmitter = require('events').EventEmitter;
         var util = require('util');
-        // create the class
-        var MyClass = function () {
-        };
-        // augment the prototype using util.inherits
-        util.inherits(MyClass, EventEmitter);
 
-        var m = new MyClass();
+        var m = new EventEmitter();
         var dummy = {};
 
         runExternal.addHandlers(m, function (err, result) {
