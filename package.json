@@ -1,6 +1,6 @@
 {
   "name": "node-test262-runner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node-based test runner for ECMAScript 262 tests (tc39.te",
   "main": "lib/main.js",
   "scripts": {
