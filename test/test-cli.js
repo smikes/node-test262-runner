@@ -10,24 +10,24 @@ describe('cli_parseArgs', function () {
     });
 
     it('should accept passed args', function () {
-        var parsed = cli.parseArgs(['--help']);
+        var parsed = cli.parseArgs(['node', 'cli.js', 'list']);
 
         assert(parsed instanceof Object);
     });
 
-    it('should recognize a --help arg', function () {
-        var parsed = cli.parseArgs(['node', 'cli.js', '--help']);
+    it('should recognize a help arg', function () {
+        var parsed = cli.parseArgs(['node', 'cli.js', 'help']);
 
-        assert(parsed.help == true);
+        assert(parsed.command == "help");
     });
 
-    it('should recognize a --test arg', function () {
+    it('should recognize a --path arg', function () {
         var parsed = cli.parseArgs(['node', 'cli.js', '--path', './test262']);
 
         assert.ok(parsed.path.indexOf('/test262') > 0);
     });
 
-    it('should not resolve when --test arg is absolute path', function () {
+    it('should not resolve when --path arg is absolute path', function () {
         var parsed = cli.parseArgs(['node', 'cli.js', '--path', '/nonexistent']);
 
         assert.equal("/nonexistent", parsed.path);
@@ -70,18 +70,18 @@ describe("cli_runCli", function () {
 });
 
 describe("cli_parseArgs", function () {
-    it("should accept --list <arg> and --test <arg>", function () {
-        var parsed = cli.parseArgs(["node", "node-test262-runner", "--list", "--pattern", "js", "--path", "foo"]);
+    it("should accept list --pattern <arg> and --test <arg>", function () {
+        var parsed = cli.parseArgs(["node", "node-test262-runner", "list", "--pattern", "js", "--path", "foo"]);
 
-        assert.equal(parsed.list, true);
+        assert.equal(parsed.command, "list");
         assert.equal(parsed.pattern, "js");
         assert.ok(parsed.path.match(/foo$/));
     });
 
-    it("should accept --list and --test <arg>", function () {
-        var parsed = cli.parseArgs(["node", "node-test262-runner", "--path", "foo", "--list"]);
+    it("should accept list and --path <arg>", function () {
+        var parsed = cli.parseArgs(["node", "node-test262-runner", "--path", "foo", "list"]);
 
-        assert.equal(parsed.list, true);
+        assert.equal(parsed.command, "list");
         assert.ok(parsed.path.match(/foo$/));
     });
 });
@@ -92,7 +92,7 @@ describe("cli_list", function () {
             con = mockConsole();
 
         cli.showList(proc, con, {
-            list: true,
+            command: "list",
             path: "test/fixtures"
         }, function () {
             assert.equal(con.out[0], "S7.2_A1.1_T1.js");
@@ -106,8 +106,8 @@ describe("cli_list", function () {
             con = mockConsole();
 
         cli.showList(proc, con, {
+            command: "list",
             path: "test/fixtures",
-            list: true,
             pattern: "pass"
         }, function () {
             assert.equal(con.out.length, 1);
