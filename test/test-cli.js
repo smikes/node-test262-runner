@@ -1,8 +1,8 @@
 'use strict';
 
-var assert = require('assert');
-
-var cli = require('../lib/cli');
+var assert = require('assert'),
+    cli = require('../lib/cli'),
+    EventEmitter = require('events').EventEmitter;
 
 describe('cli_parseArgs', function () {
     it('should be a function', function () {
@@ -35,11 +35,13 @@ describe('cli_parseArgs', function () {
 });
 
 function mockConsole() {
-    return {
-        out: [],
-        err: [],
-        log: function (s) { this.out.push(s); }
-    };
+    var c = new EventEmitter();
+    c.out = [];
+    c.err = [];
+    c.log = function (s) { this.out.push(s); };
+    c.end = function () { this.emit('finish'); };
+
+    return c;
 }
 
 function mockProcess() {
@@ -64,13 +66,47 @@ describe("cli_runCli", function () {
 });
 
 describe("cli_list", function () {
-    it("should list all tests", function () {
+    it("should list all tests", function (done) {
         var proc = mockProcess(),
             con = mockConsole();
 
-        cli.showList(proc, con);
+        cli.showList(proc, con, {test: "test/fixtures"});
 
-        assert.ok(con.out.length >= 1);
-        assert.equal(0, proc.exitCode);
+        con.on('finish', function () {
+            assert.equal(con.out[0], "S7.2_A1.1_T1.js");
+            assert.equal(0, proc.exitCode);
+            done();
+        });
     });
+
+    it("should list some tests", function (done) {
+        var proc = mockProcess(),
+            con = mockConsole();
+
+        cli.showList(proc, con, {
+            test: "test/fixtures",
+            list: "pass"
+        });
+
+        con.on('finish', function () {
+            assert.equal(con.out.length, 1);
+            assert.equal(con.out[0], "passing.js");
+            assert.equal(0, proc.exitCode);
+            done();
+        });
+    });
+
+    it("should list all tests", function (done) {
+        var proc = mockProcess(),
+            con = mockConsole();
+
+        cli.showList(proc, con, {test: "test/fixtures"});
+
+        con.on('finish', function () {
+            assert.equal(con.out[0], "S7.2_A1.1_T1.js");
+            assert.equal(0, proc.exitCode);
+            done();
+        });
+    });
+
 });
