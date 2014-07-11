@@ -22,15 +22,15 @@ describe('cli_parseArgs', function () {
     });
 
     it('should recognize a --test arg', function () {
-        var parsed = cli.parseArgs(['node', 'cli.js', '--test', './test262']);
+        var parsed = cli.parseArgs(['node', 'cli.js', '--path', './test262']);
 
-        assert.ok(parsed.test.indexOf('/test262') > 0);
+        assert.ok(parsed.path.indexOf('/test262') > 0);
     });
 
     it('should not resolve when --test arg is absolute path', function () {
-        var parsed = cli.parseArgs(['node', 'cli.js', '--test', '/nonexistent']);
+        var parsed = cli.parseArgs(['node', 'cli.js', '--path', '/nonexistent']);
 
-        assert.equal("/nonexistent", parsed.test);
+        assert.equal("/nonexistent", parsed.path);
     });
 });
 
@@ -56,7 +56,11 @@ describe("cli_runCli", function () {
     it("should take mock arguments", function () {
         var proc = mockProcess(),
             con = mockConsole(),
-            parsed = { help: true };
+            parsed = {
+                argv: {
+                    remain: [ "help" ]
+                }
+            };
 
         cli.runCli(proc, con, parsed);
 
@@ -65,18 +69,36 @@ describe("cli_runCli", function () {
     });
 });
 
+describe("cli_parseArgs", function () {
+    it("should accept --list <arg> and --test <arg>", function () {
+        var parsed = cli.parseArgs(["node", "node-test262-runner", "--list", "--pattern", "js", "--path", "foo"]);
+
+        assert.equal(parsed.list, true);
+        assert.equal(parsed.pattern, "js");
+        assert.ok(parsed.path.match(/foo$/));
+    });
+
+    it("should accept --list and --test <arg>", function () {
+        var parsed = cli.parseArgs(["node", "node-test262-runner", "--path", "foo", "--list"]);
+
+        assert.equal(parsed.list, true);
+        assert.ok(parsed.path.match(/foo$/));
+    });
+});
+
 describe("cli_list", function () {
     it("should list all tests", function (done) {
         var proc = mockProcess(),
             con = mockConsole();
 
-        cli.showList(proc, con, {test: "test/fixtures"});
-
-        con.on('finish', function () {
+        cli.showList(proc, con, {
+            list: true,
+            path: "test/fixtures"
+        }, function () {
             assert.equal(con.out[0], "S7.2_A1.1_T1.js");
-            assert.equal(0, proc.exitCode);
             done();
         });
+
     });
 
     it("should list some tests", function (done) {
@@ -84,27 +106,11 @@ describe("cli_list", function () {
             con = mockConsole();
 
         cli.showList(proc, con, {
-            test: "test/fixtures",
-            list: "pass"
-        });
-
-        con.on('finish', function () {
+            path: "test/fixtures",
+            list: true,
+            pattern: "pass"
+        }, function () {
             assert.equal(con.out.length, 1);
-            assert.equal(con.out[0], "passing.js");
-            assert.equal(0, proc.exitCode);
-            done();
-        });
-    });
-
-    it("should list all tests", function (done) {
-        var proc = mockProcess(),
-            con = mockConsole();
-
-        cli.showList(proc, con, {test: "test/fixtures"});
-
-        con.on('finish', function () {
-            assert.equal(con.out[0], "S7.2_A1.1_T1.js");
-            assert.equal(0, proc.exitCode);
             done();
         });
     });
