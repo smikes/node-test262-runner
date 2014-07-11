@@ -57,9 +57,7 @@ describe("cli_runCli", function () {
         var proc = mockProcess(),
             con = mockConsole(),
             parsed = {
-                argv: {
-                    remain: [ "help" ]
-                }
+                command: "help"
             };
 
         cli.runCli(proc, con, parsed);
@@ -83,6 +81,13 @@ describe("cli_parseArgs", function () {
 
         assert.equal(parsed.command, "list");
         assert.ok(parsed.path.match(/foo$/));
+    });
+
+    it("should provide default path", function () {
+        var parsed = cli.parseArgs(["node", "node-test262-runner", "list"]);
+
+        assert.equal(parsed.command, "list");
+        assert.equal(parsed.path, "../test262/test/suite");
     });
 });
 
@@ -114,5 +119,16 @@ describe("cli_list", function () {
             done();
         });
     });
+});
 
+describe("cli_runTests", function () {
+    it("should not be implemented", function (done) {
+        var proc = mockProcess(),
+            con = mockConsole();
+
+        cli.runTests(proc, con, {}, function () {
+            assert.equal(con.out[0], "Run not implemented yet.");
+            done();
+        });
+    });
 });
