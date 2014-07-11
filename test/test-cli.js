@@ -65,6 +65,20 @@ describe("cli_runCli", function () {
         assert.ok(con.out.length >= 1);
         assert.equal(0, proc.exitCode);
     });
+
+    it("should catch unexpected exceptions", function () {
+        var proc = mockProcess(),
+            con = mockConsole(),
+            parsed = {
+                command: "bogus"
+            };
+
+        cli.runCli(proc, con, parsed);
+
+        assert.ok(con.out.length == 1);
+        assert.ok(con.out[0].match(/Fatal error:/));
+        assert.equal(-1, proc.exitCode);
+    });
 });
 
 describe("cli_parseArgs", function () {
