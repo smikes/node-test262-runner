@@ -107,42 +107,52 @@ describe("cli_parseArgs", function () {
 
 describe("cli_list", function () {
     it("should list all tests", function (done) {
-        var proc = mockProcess(),
-            con = mockConsole();
+        var frame = {
+            proc: mockProcess(),
+            con: mockConsole(),
+            parsedArgs: {
+                command: "list",
+                path: "test/fixtures"
+            },
+            done: function () {
+                assert.ok(frame.con.out[0].match(/S7.2_A1.1_T1.js$/));
+                done();
+            }
+        };
 
-        cli.showList(proc, con, {
-            command: "list",
-            path: "test/fixtures"
-        }, function () {
-            assert.equal(con.out[0], "S7.2_A1.1_T1.js");
-            done();
-        });
+        cli.showList(frame);
 
     });
 
     it("should list some tests", function (done) {
-        var proc = mockProcess(),
-            con = mockConsole();
+        var frame = {
+            proc: mockProcess(),
+            con: mockConsole(),
+            parsedArgs: {
+                command: "list",
+                path: "test/fixtures",
+                pattern: "pass"
+            },
+            done: function () {
+                assert.equal(frame.con.out.length, 1);
+                done();
+            }
+        };
 
-        cli.showList(proc, con, {
-            command: "list",
-            path: "test/fixtures",
-            pattern: "pass"
-        }, function () {
-            assert.equal(con.out.length, 1);
-            done();
-        });
+        cli.showList(frame);
     });
 });
 
 describe("cli_runTests", function () {
     it("should not be implemented", function (done) {
-        var proc = mockProcess(),
-            con = mockConsole();
+        var frame = {
+            con: mockConsole(),
+            done: function () {
+                assert.equal(frame.con.out[0], "Run not implemented yet.");
+                done();
+            }
+        };
 
-        cli.runTests(proc, con, {}, function () {
-            assert.equal(con.out[0], "Run not implemented yet.");
-            done();
-        });
+        cli.runTests(frame);
     });
 });
