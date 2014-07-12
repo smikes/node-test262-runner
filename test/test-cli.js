@@ -115,7 +115,7 @@ describe("cli_list", function () {
                 path: "test/fixtures"
             },
             done: function () {
-                assert.ok(frame.con.out[0].match(/S7.2_A1.1_T1.js$/));
+                assert.ok(frame.con.out[0].match(/test.*js$/));
                 done();
             }
         };

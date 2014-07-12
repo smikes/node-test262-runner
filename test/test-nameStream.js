@@ -7,7 +7,7 @@ describe("nameStream", function () {
     it("should produce a stream", function (done) {
         var s = new NameStream("test");
 
-        s.on('data', function (file) {
+        s.on('data', function (files) {
             // ignore
         }).on('end', function () {
             done();
