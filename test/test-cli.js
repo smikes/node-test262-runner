@@ -156,3 +156,16 @@ describe("cli_runTests", function () {
         cli.runTests(frame);
     });
 });
+
+describe("cli_exitWhenDone", function () {
+    it("exits with error code on error", function () {
+        var proc = mockProcess(),
+            con = mockConsole(),
+            done = cli.exitWhenDone(proc,con);
+
+        done(new Error("not a bicycle"));
+
+        assert.ok(con.out[0].match(/bicycle/));
+        assert.equal(-1, proc.exitCode);
+    });
+});
