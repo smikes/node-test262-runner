@@ -3,7 +3,6 @@
 var assert = require('assert'),
     NameStream = require('../lib/nameStream');
 
-
 describe("nameStream", function () {
     it("should produce a stream", function (done) {
         var s = new NameStream({}, "test");
