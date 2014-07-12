@@ -16,19 +16,21 @@ describe("nameStream", function () {
 
     it("should throw if initial directory does not exist", function (done) {
 
-        assert.throws(function () {
-            var s = new NameStream({}, "./nonexistent-dir");
-        }, /test262 path does not exist/);
+        var s = new NameStream({}, "./nonexistent-dir");
 
-        done();
+        s.on('error', function(err) {
+            assert.ok(err.message.match(/test262 path does not exist/));
+            done();
+        });
     });
 
     it("should throw if initial directory arg is not a directory", function (done) {
 
-        assert.throws(function () {
-            var s = new NameStream({}, "./README.md");
-        }, /test262 path is not a directory/);
+        var s = new NameStream({}, "./README.md");
 
-        done();
+        s.on('error', function(err) {
+            assert.ok(err.message.match(/test262 path is not a directory/));
+            done();
+        });
     });
 });
