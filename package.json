@@ -28,6 +28,7 @@
     "jslint": "^0.5.2"
   },
   "dependencies": {
+    "byline": "^4.1.1",
     "mocha": "^1.20.1",
     "nopt": "^3.0.0",
     "readdir-stream": "^0.1.0"
